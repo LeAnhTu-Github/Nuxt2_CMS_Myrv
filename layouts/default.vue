@@ -14,6 +14,7 @@ export default {
       data: {} as ResponseData,
       isCollapsed: true,
       isShowModal: false,
+      isDark: false
     }
   },
   computed: {
@@ -28,7 +29,7 @@ export default {
     async handleLogout() {
       try {
         const result = await this.logout()
-        
+
         if (result.success) {
           this.$router.push('/auth/sign-in')
         }
@@ -49,16 +50,36 @@ export default {
     handleCheckScreenSize() {
       this.isCollapsed = window.innerWidth < 768
     },
+    handleProfile() {
+      this.$router.push('/profile')
+    },
+    handleToggleTheme() {
+      this.isDark = !this.isDark
+      this.$vuetify.theme.dark = this.isDark
+      if (process.client) {
+        localStorage.setItem('theme', this.isDark ? 'dark' : 'light')
+      }
+    }
+  },
+  created() {
+    this.handleCheckScreenSize()
+    if (process.client) {
+      const savedTheme = localStorage.getItem('theme')
+      if (savedTheme) {
+        this.isDark = savedTheme === 'dark'
+        this.$vuetify.theme.dark = this.isDark
+      }
+    }
   },
   async mounted() {
     try {
       const authResult = await this.checkAuth()
-      
+
       if (!authResult.success) {
         this.$router.push('/auth/sign-in')
       }
       const result = await this.fetchUserInfo()
-      if(result.success && result.data) {
+      if (result.success && result.data) {
         this.data = result.data
         this.pageRoles = result.data.pageRoles
         this.userInfo = result.data.user
@@ -74,68 +95,61 @@ export default {
   }
 }
 </script>
-
 <template>
   <v-app>
     <div class="layout-container">
-    <Sidebar :pageRoles="pageRoles" :userInfo="userInfo" :isCollapsed="isCollapsed" />
-    <div class="right-content">
-      <header class="header">
-        <button
-          class="p-1 rounded-lg hover:bg-gray-100 transition w-8"
-          tabindex="0"
-          aria-label="Toggle sidebar"
-          @click="handleToggleSidebar"
-          @keydown.enter="handleToggleSidebar"
-          @keydown.space.prevent="handleToggleSidebar"
-        >
-        <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            stroke-width="2" 
-            stroke-linecap="round" 
-            stroke-linejoin="round"
-            class="w-5 h-5 text-gray-600"
-            :class="{ 'rotate-180': isCollapsed }"
+      <Sidebar :pageRoles="pageRoles" :userInfo="userInfo" :isCollapsed="isCollapsed" @profile="handleProfile"
+        @signOut="handleLogout" />
+      <div class="right-content">
+        <header class="header">
+          <div class="flex items-center">
+            <button class="p-1 rounded-lg hover:bg-gray-100 transition w-8" tabindex="0" aria-label="Toggle sidebar"
+              @click="handleToggleSidebar" @keydown.enter="handleToggleSidebar"
+              @keydown.space.prevent="handleToggleSidebar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="w-5 h-5 text-gray-600" :class="{ 'rotate-180': isCollapsed }">
+                <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                <path d="M9 3v18"></path>
+              </svg>
+            </button>
+            <div class="user-info">
+              <h2 class="welcome-text">Welcome {{ data.user?.username }} - {{ data.user?.phone }}</h2>
+            </div>
+          </div>
+          <button 
+            class="p-2 rounded-lg bg-gray-100 transition w-8 h-8 flex items-center justify-center" 
+            @click="handleToggleTheme"
+            tabindex="0"
+            aria-label="Toggle theme"
+            @keydown.enter="handleToggleTheme"
+            @keydown.space.prevent="handleToggleTheme"
           >
-            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
-            <path d="M9 3v18"></path>
-          </svg>
-        </button>
-        <div class="user-info">
-          <h2 class="welcome-text">Welcome {{data.user?.username}} - {{data.user?.phone}}</h2>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tabler-icon tabler-icon-brightness">
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+              <path d="M12 3l0 18"></path>
+              <path d="M12 9l4.65 -4.65"></path>
+              <path d="M12 14.3l7.37 -7.37"></path>
+              <path d="M12 19.6l8.85 -8.85"></path>
+            </svg>
+          </button>
+        </header>
+        <div v-if="isLoading" class="loading-container">
+          <div class="loading-spinner">
+            <svg class="spinner" viewBox="0 0 24 24">
+              <circle class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+                fill="none" />
+              <path class="spinner-path" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            <span class="loading-text">Loading...</span>
+          </div>
         </div>
-        <button
-          class="logout-button"
-          tabindex="0"
-          aria-label="Sign out of your account"
-          @click="handleLogout"
-          @keydown="handleKeyDownLogout"
-        >
-          <svg class="logout-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          <span>Logout</span>
-        </button>
-      </header> 
-      <div v-if="isLoading" class="loading-container">
-        <div class="loading-spinner">
-          <svg class="spinner" viewBox="0 0 24 24">
-            <circle class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-            <path class="spinner-path" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-          </svg>
-          <span class="loading-text">Loading...</span>
-        </div>
+        <main v-else-if="isAuthenticated" class="main-content">
+          <nuxt />
+        </main>
       </div>
-      <main v-else-if="isAuthenticated" class="main-content">
-        <nuxt />
-      </main>
     </div>
-  </div>
   </v-app>
 </template>
 
@@ -173,6 +187,7 @@ export default {
 }
 
 .welcome-text {
+
   font-size: 16px;
   font-weight: 500;
   color: #111827;
@@ -260,6 +275,7 @@ export default {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -269,28 +285,31 @@ export default {
   .sidebar {
     width: 240px;
   }
+
   .user-info {
     flex-direction: column;
     align-items: start;
     gap: 4px;
   }
+
   .header {
     padding: 12px 16px;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
     align-items: stretch;
     height: auto;
   }
-  
+
   .welcome-text {
     font-size: 18px;
+    display: none;
     text-align: left;
   }
-  
+
   .logout-button {
     justify-content: center;
   }
-  
+
   .main-content {
     padding: 16px;
   }

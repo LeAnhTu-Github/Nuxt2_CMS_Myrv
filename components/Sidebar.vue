@@ -4,6 +4,11 @@ import { PageRole } from '~/types/UserInfo'
 import { PropType } from 'vue'  
 export default {
   name: 'Sidebar',
+  data() {
+    return {
+      isShowModal: false,
+    }
+  },
   props: {
     pageRoles: {
       type: Array as PropType<PageRole[]>,
@@ -34,6 +39,11 @@ export default {
       return map
     }
   },
+  methods: {
+    handleShowModal() {
+      this.isShowModal = !this.isShowModal
+    }
+  }
 }
 </script>
 
@@ -66,23 +76,80 @@ export default {
       </nav>
     </div>
     <div class="mt-auto flex items-center gap-3 px-4 py-4 bg-white border-t border-gray-100">
-      <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 text-lg font-bold text-gray-700">
-        {{ userInfo.username?.slice(0, 2).toUpperCase() }}
-      </div>
-      <div v-if="!isCollapsed" class="flex flex-col">
-        <span class="font-semibold text-base">{{ userInfo.username }}</span>
-        <span class="text-sm text-gray-500">{{ userInfo.phone }}</span>
-      </div>
-      <button
-        v-if="!isCollapsed"
-        class="ml-auto"
-        tabindex="0"
-        aria-label="User menu"
+      <v-menu
+        offset-y
+        top
+        :close-on-content-click="false"
+        transition="scale-transition"
+        :offset="[0, -10]"
       >
-        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-      </button>
+        <template #activator="{ on: menuOn, attrs: menuAttrs }">
+          <div
+            class="w-full h-full flex items-center cursor-pointer justify-between"
+            v-on="menuOn"
+            v-bind="menuAttrs"
+            tabindex="0"
+            aria-label="User menu"
+            @keydown.enter="menuOn.click"
+          >
+            <div class="flex items-center">
+              <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 text-sm font-bold text-gray-700">
+              {{ userInfo.username?.slice(0, 2).toUpperCase() }}
+            </div>
+            <div v-if="!isCollapsed" class="flex flex-col ml-3">
+              <span class="font-semibold text-sm">{{ userInfo.username }}</span>
+              <span class="text-sm text-gray-500">{{ userInfo.phone }}</span>
+            </div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tabler-icon tabler-icon-chevrons-down ml-auto size-4" data-sentry-element="IconChevronsDown" data-sentry-source-file="app-sidebar.tsx"><path d="M7 7l5 5l5 -5"></path><path d="M7 13l5 5l5 -5"></path></svg>
+          </div>
+        </template>
+        <v-list class="min-w-[200px] bg-white rounded-2xl shadow-sm p-1 ">
+          <v-list-item class="border-b border-gray-100 h-8 rounded-xl ">
+            <div
+            class="w-full h-full flex items-center cursor-pointer justify-between"
+          >
+            <div class="flex items-center">
+              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-sm font-bold text-gray-700">
+              {{ userInfo.username?.slice(0, 2).toUpperCase() }}
+            </div>
+            <div v-if="!isCollapsed" class="flex flex-col ml-3">
+              <span class="font-semibold text-sm">{{ userInfo.username }}</span>
+              <span class="text-sm text-gray-500">{{ userInfo.phone }}</span>
+            </div>
+            </div>
+            </div>
+          </v-list-item>
+          <v-list-item
+            tabindex="0"
+            aria-label="Profile"
+            class="hover:bg-gray-100 cursor-pointer border-b border-gray-100 h-8"
+            @click="$emit('profile')"
+            @keydown.enter="$emit('profile')"
+          >
+            <div class="w-10">
+              <v-icon class="text-xs">mdi-account-circle</v-icon>
+            </div>
+            <v-list-item-content>
+              <v-list-item-title class="text-sm">Profile</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+            tabindex="0"
+            aria-label="Sign Out"
+            class="hover:bg-gray-100 cursor-pointer h-8"
+            @click="$emit('signOut')"
+            @keydown.enter="$emit('signOut')"
+          >
+            <div class="w-10">
+              <v-icon class="text-xs">mdi-logout</v-icon>
+            </div>
+            <v-list-item-content>
+              <v-list-item-title class="text-sm">Sign Out</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
   </aside>
 </template>
