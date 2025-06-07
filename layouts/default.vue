@@ -12,7 +12,7 @@ export default {
       pageRoles: [] as PageRole[],
       userInfo: {} as User,
       data: {} as ResponseData,
-      isCollapsed: false,
+      isCollapsed: true,
       isShowModal: false,
     }
   },
