@@ -117,22 +117,88 @@ export default {
               <h2 class="welcome-text">Welcome {{ data.user?.username }} - {{ data.user?.phone }}</h2>
             </div>
           </div>
-          <button 
-            class="p-2 rounded-lg bg-gray-100 transition w-8 h-8 flex items-center justify-center" 
-            @click="handleToggleTheme"
-            tabindex="0"
-            aria-label="Toggle theme"
-            @keydown.enter="handleToggleTheme"
-            @keydown.space.prevent="handleToggleTheme"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tabler-icon tabler-icon-brightness">
-              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-              <path d="M12 3l0 18"></path>
-              <path d="M12 9l4.65 -4.65"></path>
-              <path d="M12 14.3l7.37 -7.37"></path>
-              <path d="M12 19.6l8.85 -8.85"></path>
-            </svg>
-          </button>
+          <div class="flex items-center gap-2">
+            <v-menu
+              offset-y
+              bottom
+              :close-on-content-click="false"
+              transition="scale-transition"
+              :offset="[0, -10]"
+            >
+              <template #activator="{ on: menuOn, attrs: menuAttrs }">
+                <button
+                  class="p-2 rounded-full bg-gray-100 transition w-8 h-8 flex items-center justify-center"
+                  v-on="menuOn"
+                  v-bind="menuAttrs"
+                  tabindex="0"
+                  aria-label="User menu"
+                >
+                  <div class="flex items-center justify-center w-6 h-6 rounded-lg text-sm font-bold text-gray-700">
+                    {{ data.user?.username?.slice(0, 2).toUpperCase() }}
+                  </div>
+                </button>
+              </template>
+              <v-list class="min-w-[200px] bg-white rounded-2xl shadow-sm p-1">
+                <v-list-item class="border-b border-gray-100 h-8">
+                  <div class="w-full h-full flex items-center cursor-pointer justify-between">
+                    <div class="flex items-center">
+                      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-sm font-bold text-gray-700">
+                        {{ data.user?.username?.slice(0, 2).toUpperCase() }}
+                      </div>
+                      <div class="flex flex-col ml-3">
+                        <span class="font-semibold text-sm">{{ data.user?.username }}</span>
+                        <span class="text-sm text-gray-500">{{ data.user?.phone }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </v-list-item>
+                <v-list-item
+                  tabindex="0"
+                  aria-label="Profile"
+                  class="hover:bg-gray-100 cursor-pointer border-b border-gray-100 h-8"
+                  @click="handleProfile"
+                  @keydown.enter="handleProfile"
+                >
+                  <div class="w-10">
+                    <v-icon class="text-xs">mdi-account-circle</v-icon>
+                  </div>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-sm">Profile</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                  tabindex="0"
+                  aria-label="Sign Out"
+                  class="hover:bg-gray-100 cursor-pointer h-8"
+                  @click="handleLogout"
+                  @keydown.enter="handleLogout"
+                >
+                  <div class="w-10">
+                    <v-icon class="text-xs">mdi-logout</v-icon>
+                  </div>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-sm">Sign Out</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+            <button 
+              class="p-2 rounded-lg bg-gray-100 transition w-8 h-8 flex items-center justify-center" 
+              @click="handleToggleTheme"
+              tabindex="0"
+              aria-label="Toggle theme"
+              @keydown.enter="handleToggleTheme"
+              @keydown.space.prevent="handleToggleTheme"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tabler-icon tabler-icon-brightness">
+                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                <path d="M12 3l0 18"></path>
+                <path d="M12 9l4.65 -4.65"></path>
+                <path d="M12 14.3l7.37 -7.37"></path>
+                <path d="M12 19.6l8.85 -8.85"></path>
+              </svg>
+            </button>
+          </div>
         </header>
         <div v-if="isLoading" class="loading-container">
           <div class="loading-spinner">

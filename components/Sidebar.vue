@@ -75,7 +75,7 @@ export default {
         />
       </nav>
     </div>
-    <div class="mt-auto flex items-center gap-3 px-4 py-4 bg-white border-t border-gray-100">
+    <div class="mt-auto flex items-center gap-3 px-4 py-4 bg-white">
       <v-menu
         offset-y
         top
@@ -105,7 +105,7 @@ export default {
           </div>
         </template>
         <v-list class="min-w-[200px] bg-white rounded-2xl shadow-sm p-1 ">
-          <v-list-item class="border-b border-gray-100 h-8 rounded-xl ">
+          <v-list-item class="border-b border-gray-100 h-8 ">
             <div
             class="w-full h-full flex items-center cursor-pointer justify-between"
           >
