@@ -7,6 +7,11 @@ export default {
   env:{
     apiUrl: process.env.API_URL,
   },
+  // Build Configuration: https://go.nuxtjs.dev/config-build
+  build: {
+    // Output directory for production build
+    dir: 'dist'
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'nuxt2-script-setup-example',

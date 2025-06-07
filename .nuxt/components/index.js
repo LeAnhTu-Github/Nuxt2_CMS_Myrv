@@ -1,7 +1,7 @@
-export const NuxtLogo = () => import('../../components/NuxtLogo.vue' /* webpackChunkName: "components/nuxt-logo" */).then(c => wrapFunctional(c.default || c))
-export const Sidebar = () => import('../../components/Sidebar.vue' /* webpackChunkName: "components/sidebar" */).then(c => wrapFunctional(c.default || c))
-export const SidebarItem = () => import('../../components/SidebarItem.vue' /* webpackChunkName: "components/sidebar-item" */).then(c => wrapFunctional(c.default || c))
-export const Tutorial = () => import('../../components/Tutorial.vue' /* webpackChunkName: "components/tutorial" */).then(c => wrapFunctional(c.default || c))
+export { default as NuxtLogo } from '../../components/NuxtLogo.vue'
+export { default as Sidebar } from '../../components/Sidebar.vue'
+export { default as SidebarItem } from '../../components/SidebarItem.vue'
+export { default as Tutorial } from '../../components/Tutorial.vue'
 
 // nuxt/nuxt.js#8607
 function wrapFunctional(options) {
