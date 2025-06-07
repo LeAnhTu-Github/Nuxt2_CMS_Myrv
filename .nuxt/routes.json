@@ -1,0 +1,23 @@
+[
+  {
+    "name": "auth-sign-in",
+    "path": "/auth/sign-in",
+    "component": "/Users/anhtus/Desktop/nuxt2-script-setup-example/pages/auth/sign-in.vue",
+    "chunkName": "pages/auth/sign-in",
+    "_name": "_2c4a6a42"
+  },
+  {
+    "name": "dashboard-overview",
+    "path": "/dashboard/overview",
+    "component": "/Users/anhtus/Desktop/nuxt2-script-setup-example/pages/dashboard/overview/index.vue",
+    "chunkName": "pages/dashboard/overview/index",
+    "_name": "_158e74a8"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/Users/anhtus/Desktop/nuxt2-script-setup-example/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_c71e61de"
+  }
+]
