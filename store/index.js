@@ -81,10 +81,7 @@ const userModule = {
         }
         
       } catch (error) {
-        const errorMessage = error.response?.data?.message || 
-                           error.response?.data?.error || 
-                          error.message || 
-                        'Login failed'
+        const errorMessage = error.response?.data?.message || 'Login failed'
         
         commit('setError', errorMessage)
         commit('setAuthenticated', false)

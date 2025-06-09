@@ -56,7 +56,7 @@ export default {
           }, 1000)
         }else{
           this.showToasterError = true
-          this.toasterMessage = 'Mật khẩu không chính xác'
+          this.toasterMessage = result.error
           setTimeout(() => {
             this.showToasterError = false
           }, 1500)
